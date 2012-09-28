@@ -1,0 +1,94 @@
+body {
+	background-color: black;
+	color: white;
+}
+
+h3 {
+	font-weight: bold;
+	text-decoration: underline;
+	margin-top: 0;
+}
+
+.content {
+	background-color: #080;	
+	width: 750px;
+	height: 450px;
+	margin: auto;
+	border: 20px solid #631;
+	border-radius: 15px;
+	padding: 10px;
+}
+
+#game {
+   display: block;
+   height: 220px;	
+	margin: auto;
+	padding: 10px;
+}
+
+#commands {
+	margin: 20px auto;
+	padding: 0 10px;
+}
+
+#debug {
+	padding-left: 10px;
+	margin-top: 10px;
+}
+
+#results {
+	margin: 20px 10px 0 10px;
+	height: 60px;
+	padding: 10px;
+	border-radius: 15px;
+	border-left: 1px solid #030;
+	border-top: 1px solid #030;
+	border-right: 1px solid #0a0;
+	border-bottom: 1px solid #0a0;	
+}
+
+#commands input {
+	height: 50px;
+	width: 100px;
+	font-weight: bold;
+}
+
+#start, #done {
+		display: none;
+}
+
+.hand {
+	position: relative;
+	display: block;
+	width: 310px;
+	height: 200px;
+	background-color: #060;
+	padding: 10px;
+	border-radius: 15px;
+	border-left: 1px solid #030;
+	border-top: 1px solid #030;
+	border-right: 1px solid #0a0;
+	border-bottom: 1px solid #0a0;
+}
+
+#playerhand {
+   float: left;
+}
+
+#dealerhand {
+	float: right;	
+}
+
+.firstcard, .card {
+	position: absolute;	
+}
+
+.cards {
+	position: relative;	
+}
+
+.points {
+	position: absolute;
+	bottom: 10px;
+}
+
