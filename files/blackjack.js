@@ -1,5 +1,4 @@
-var playerDeck, dealerDeck;
-var playerHand, dealerHand;
+var gameDeck, playerHand, dealerHand;
 //var dealerlimit = 16;   // value at which the dealer will not deal again
 var playerpoints, dealerpoints;
 var imagesPath = 'images/';
@@ -13,7 +12,6 @@ var played = 0;
 var won = 0;
 var draw = 0;
 var lost = 0;
-var percent = 0;
 var betValue = 0;
 
 $(document).ready(function() {
@@ -44,8 +42,7 @@ function play() {
 
 // Initialize values to restart the game without the need to reload the page
 function initialize() {
-    playerDeck = new cardDeck();
-    dealerDeck = new cardDeck();
+    gameDeck = new cardDeck(1);
     playerHand = new Array();
     dealerHand = new Array();
     playerpoints = 0;
@@ -62,7 +59,7 @@ function initialize() {
     $("#start").hide();
     if (imagesLoaded == 0) {
         $("#deal").prop('disabled', true);
-        preloadImages(playerDeck);
+        preloadImages(gameDeck);
     }
     /*if (betValue == 0) {
         $("#deal").prop('disabled', true);
@@ -99,25 +96,25 @@ function getPoints(hand, who) {
 
 // ---------------------------------------------------------------------------   DEAL cards ----------------------------------------------------------------
 function deal() {
-    var playercard = hit(playerDeck);
-    playerHand.push(playercard);
+    var newcard = hit(gameDeck);
+    playerHand.push(newcard);
     playerpoints = getPoints(playerHand, "player");
-    showCard(playercard, playerpoints, "player");
+    showCard(newcard, playerpoints, "player");
     if ((dealerpoints < playerpoints && playerpoints <= 21) || dealerHand.length < 2) {
-        var dealercard = hit(dealerDeck);
-        dealerHand.push(dealercard);
+        newcard = hit(gameDeck);
+        dealerHand.push(newcard);
         dealerpoints = getPoints(dealerHand, "dealer");
-        showCard(dealercard, dealerpoints, "dealer");
+        showCard(newcard, dealerpoints, "dealer");
     }
     $("#deal").prop('value', 'Hit!');
     $("#done").show();
     if (playerpoints == 21) {
         if (dealerpoints < 21) {
             do {
-                var dealercard = hit(dealerDeck);
-                dealerHand.push(dealercard);
+                newcard = hit(gameDeck);
+                dealerHand.push(newcard);
                 dealerpoints = getPoints(dealerHand, "dealer");
-                showCard(dealercard, dealerpoints, "dealer");
+                showCard(newcard, dealerpoints, "dealer");
             } while(dealerpoints<21);
         }
         if (dealerpoints > 21) {
@@ -155,10 +152,10 @@ function done() {
     $("#done").hide();
     if (dealerpoints < playerpoints) {
         do {
-            var dealercard = hit(dealerDeck);
-            dealerHand.push(dealercard);
+            var newcard = hit(gameDeck);
+            dealerHand.push(newcard);
             dealerpoints = getPoints(dealerHand, "dealer");
-            showCard(dealercard, dealerpoints, "dealer");
+            showCard(newcard, dealerpoints, "dealer");
         } while (dealerpoints<playerpoints && dealerpoints < 21);
     }
     if (playerpoints == dealerpoints) {
@@ -166,10 +163,10 @@ function done() {
             endGame("DRAW!! You got " + playerpoints + " points. Dealer got " + dealerpoints + " points.");
             drawGame();
         } else {
-            var dealercard = hit(dealerDeck);
-            dealerHand.push(dealercard);
+            var newcard = hit(gameDeck);
+            dealerHand.push(newcard);
             dealerpoints = getPoints(dealerHand, "dealer");
-            showCard(dealercard, dealerpoints, "dealer");
+            showCard(newcard, dealerpoints, "dealer");
             done();
             return false;
         }
@@ -311,8 +308,8 @@ function preloadImages(cards) {
 
 function imgLoad(image) {
     imagesLoaded++;
-    setLoader(imagesLoaded / playerDeck.length);
-    if (imagesLoaded == playerDeck.length) {
+    setLoader(imagesLoaded / gameDeck.length);
+    if (imagesLoaded == gameDeck.length) {
         $("#deal").prop('disabled', false);
         $('#loader').empty().append("Deck loaded!!").fadeOut("slow").remove();
     }
@@ -350,25 +347,26 @@ function rnd(num) {
     return Math.floor(Math.random() * num);
 }
 
-function cardDeck() {
+function cardDeck(num) {
     var suit = new Array('clubs', 'hearts', 'spades', 'diamonds');
     var suitLetter = new Array('c', 'h', 's', 'd');
     var deck = new Array();
-    for (i in suit) {
-        deck.push(new card(suit[i], 'Ace', 11, imagesPath + suitLetter[i] + '1.gif'));
-        deck.push(new card(suit[i], 'Two', 2, imagesPath + suitLetter[i] + '2.gif'));
-        deck.push(new card(suit[i], 'Three', 3, imagesPath + suitLetter[i] + '3.gif'));
-        deck.push(new card(suit[i], 'Four', 4, imagesPath + suitLetter[i] + '4.gif'));
-        deck.push(new card(suit[i], 'Five', 5, imagesPath + suitLetter[i] + '5.gif'));
-        deck.push(new card(suit[i], 'Six', 6, imagesPath + suitLetter[i] + '6.gif'));
-        deck.push(new card(suit[i], 'Seven', 7, imagesPath + suitLetter[i] + '7.gif'));
-        deck.push(new card(suit[i], 'Eight', 8, imagesPath + suitLetter[i] + '8.gif'));
-        deck.push(new card(suit[i], 'Nine', 9, imagesPath + suitLetter[i] + '9.gif'));
-        deck.push(new card(suit[i], 'Ten', 10, imagesPath + suitLetter[i] + '10.gif'));
-        deck.push(new card(suit[i], 'Jack', 10, imagesPath + suitLetter[i] + 'j.gif'));
-        deck.push(new card(suit[i], 'Queen', 10, imagesPath + suitLetter[i] + 'q.gif'));
-        deck.push(new card(suit[i], 'King', 10, imagesPath + suitLetter[i] + 'k.gif'));
-    }
+    for (i=0; i < num; i++) 
+        for (i in suit) {
+            deck.push(new card(suit[i], 'Ace', 11, imagesPath + suitLetter[i] + '1.gif'));
+            deck.push(new card(suit[i], 'Two', 2, imagesPath + suitLetter[i] + '2.gif'));
+            deck.push(new card(suit[i], 'Three', 3, imagesPath + suitLetter[i] + '3.gif'));
+            deck.push(new card(suit[i], 'Four', 4, imagesPath + suitLetter[i] + '4.gif'));
+            deck.push(new card(suit[i], 'Five', 5, imagesPath + suitLetter[i] + '5.gif'));
+            deck.push(new card(suit[i], 'Six', 6, imagesPath + suitLetter[i] + '6.gif'));
+            deck.push(new card(suit[i], 'Seven', 7, imagesPath + suitLetter[i] + '7.gif'));
+            deck.push(new card(suit[i], 'Eight', 8, imagesPath + suitLetter[i] + '8.gif'));
+            deck.push(new card(suit[i], 'Nine', 9, imagesPath + suitLetter[i] + '9.gif'));
+            deck.push(new card(suit[i], 'Ten', 10, imagesPath + suitLetter[i] + '10.gif'));
+            deck.push(new card(suit[i], 'Jack', 10, imagesPath + suitLetter[i] + 'j.gif'));
+            deck.push(new card(suit[i], 'Queen', 10, imagesPath + suitLetter[i] + 'q.gif'));
+            deck.push(new card(suit[i], 'King', 10, imagesPath + suitLetter[i] + 'k.gif'));
+        }
     return deck;
 }
 
