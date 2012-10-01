@@ -1,33 +1,61 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="files/blackjack.css">
+		<meta charset="utf-8">
+		<title>
+			Black Jackie
+		</title>
+		<link rel="stylesheet" href="files/blackjack.css" type="text/css">
 	</head>
 	<body>
-		<div id="panel"></div>
 		<div class="content">
-			<div id="game">
-				<div class="hand" id="playerhand">
-					<h3>Your hand</h3>
-					<div class="cards"></div>
-					<div class="points" id="playerpoints"></div>
+			<div class="panel">
+				<div class="status">
+					Money: <span id="money">0</span> <br/>
+					Games played this session: <span id="played">0</span><br/>
+					Won: <span id="won">0</span> Draw: <span id="draw">0</span> Lost: <span id="lost">0</span><br/>
 				</div>
-				<div class="hand" id="dealerhand">
-					<h3>Dealer's hand</h3>
-					<div class="cards"></div>
-					<div class="points" id="dealerpoints"></div>
+				<div class="bet">
+					Please select your bet:<br/>
+					<input type="radio" name="bet" value="1" id="bet_one" />
+					<label for = "bet_one">1</label>
+					<input type="radio" name="bet" value="2" id="bet_two" />
+					<label for = "bet_two">2</label>
+					<input type="radio" name="bet" value="5" id="bet_five" />
+					<label for = "bet_five">5</label>
 				</div>
 			</div>
-			<div id="commands">
-				<input id="deal" type="button" value="Deal"/>
-				<input id="done" type="button" value="Done"/>
-				<input id="start" type="button" value="Restart"/>
+			<div class="main">
+				<div id="game">
+					<div class="hand" id="playerhand">
+						<h3>Your hand</h3>
+						<div class="cards"></div>
+						<div class="points" id="playerpoints"></div>
+					</div>
+					<div class="hand" id="dealerhand">
+						<h3>Dealer's hand</h3>
+						<div class="cards"></div>
+						<div class="points" id="dealerpoints"></div>
+					</div>
+				</div>
+				<div id="commands">
+					<input id="deal" type="button" value="Deal"/>
+					<input id="done" type="button" value="Done"/>
+					<input id="start" type="button" value="Restart"/>
+				</div>
+				<div id="results"></div>
+				<div id="debug"></div>
 			</div>
-			<div id="results"></div>
-			<div id="debug"></div>
 		</div>
-		<script src="files/jquery-1.8.2.min.js"></script>
-		<script src="files/blackjack.js"></script>
+		<div id="instructions">
+				<strong>Black Jackie</strong><br />
+				<p>This is a simple Black Jack game that I made to practise a bit Javascript and jQuery.<br />
+				You can get the source code from the Black Jackie github repo. <br />
+				If you see any errors, please let me know.<br /></p>
+			</div>
+			<div id="footer"></div>
+		<script src="files/jquery-1.8.2.min.js" type="text/javascript"></script>
+		<script src="files/blackjack.js" type="text/javascript"></script>
 		<noscript>
 			Your browser doesn't seem to support Javascript, which is required to show this page.
 		</noscript>

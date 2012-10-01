@@ -10,18 +10,73 @@ h3 {
 }
 
 .content {
-	background-color: #080;	
 	width: 750px;
-	height: 450px;
 	margin: auto;
-	border: 20px solid #631;
+	background-color: #080;	
 	border-radius: 15px;
+	border: 20px solid #631;
 	padding: 10px;
 }
 
+#instructions {
+	width: 750px;
+	margin: auto;
+	padding: 10px;
+}
+
+.panel {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	height: 70px;
+	border-bottom: 1px solid #003300;
+	padding: 10px;
+}
+
+#money, #played, #won, #draw, #lost, #percentwon {
+	color: yellow;
+	font-weight: bold;
+	margin-right: 15px;
+}
+
+.bet {
+	width: 300px;
+	float: right;
+	border: 1px dotted #030;
+	padding: 10px 15px;
+	font-weight: bold;
+	line-height: 1.8;
+}
+
+.bet label {
+	color: navy;
+	font-weight: normal;
+	margin-right: 10px;
+}
+
+.status {
+	width: 300px;
+	float: left;
+	padding: 5px;
+	line-height: 1.5;
+}
+
+.main {
+	height: 460px;
+}
+
+.red {
+	color: #B00;	
+	border: 1px solid #B00;
+	padding: 5px;
+}
+
+.percent {
+	font-weight: lighter;
+}
+
 #game {
-   display: block;
-   height: 220px;	
+    display: block;
+    height: 220px;	
 	margin: auto;
 	padding: 10px;
 }
@@ -33,7 +88,7 @@ h3 {
 
 #debug {
 	padding-left: 10px;
-	margin-top: 10px;
+	margin-top: 15px;
 }
 
 #results {
@@ -54,7 +109,7 @@ h3 {
 }
 
 #start, #done {
-		display: none;
+	display: none;
 }
 
 .hand {
