@@ -38,13 +38,6 @@ function play() {
 // Initialize values to restart the game without the need to reload the page
 function initialize() {
     gameDeck = new cardDeck(1);
-    
-    bjDeck = new Array();
-    bjDeck.push(gameDeck[0]);
-    bjDeck.push(gameDeck[9]);
-    bjDeck.push(gameDeck[0]);
-    bjDeck.push(gameDeck[9]);
-    
     playerHand = new Hand();
     dealerHand = new Hand();
     playercardmargin = 0;
@@ -56,38 +49,14 @@ function initialize() {
     slideCounter = 0;
     $("#done").hide();
     $("#start").hide();
+    $("#double").hide();
     if (imagesLoaded == 0) {
         $("#deal").prop('disabled', true);
         preloadImages(gameDeck);
     }
     $("#money").empty().append(money);
+    //$("#double").attr("value","DoubleDown");
 }
-
-/*function getPoints(hand, who) {
-    var points = 0;
-    var ace = 0;
-    if (who == "player")
-        playeraces = 0;
-    else
-        dealeraces = 0;
-    for (i in hand) {
-        points += hand[i].value;
-        if (hand[i].name == "Ace" && hand[i].value == 11)
-            ace++;
-    }
-    if (points > 21 && ace > 0)
-        for (i in hand)
-        if (hand[i].name == "Ace" && hand[i].value == 11) {
-            hand[i].value = 1;
-            points -= 10;
-            if (who == "player")
-                playeraces++;
-            else
-                dealeraces++;
-            return points;
-        }
-    return points;
-}*/
 
 function Hand() {
     var cards = new Array();
@@ -142,7 +111,7 @@ function deal() {
     }
     $("#deal").prop('value', 'Hit!');
     $("#done").show();
-    if (playerHand.size()>=2) {
+    if (playerHand.size()==2) {
         if (playerHand.blackjack)
             if(!dealerHand.blackjack) {
                 endGame("You WON with a BLACKJACK!!");
@@ -157,7 +126,7 @@ function deal() {
         if (dealerHand.blackjack)
              if(!playerHand.blackjack) {
                 endGame("You LOST!! Dealer wins with a BLACKJACK!!");
-                win();
+                loss();
                 return true;
             }
             else {
@@ -165,10 +134,10 @@ function deal() {
                 tie();
                 return true;  
             }
-        if (playerHand.points() > 21)
-            done();
-    } else
-        deal();  // deals a second card each if there is only one at each hand
+    } else if (playerHand.size()==1)
+            deal();  // deals a second card each if there is only one at each hand
+    else if (playerHand.points() > 21)
+        done();
 }
 
 function done() {
@@ -188,7 +157,7 @@ function done() {
             endGame("Both you and the dealer BUSTED!! You lost. (house advantage)");
             loss();
         }
-    if (playerHand.points() == dealerHand.points()) {
+    else if (playerHand.points() == dealerHand.points()) {
         endGame("DRAW!! You and the dealer got the same points.");
         tie();
     } else if (playerHand.points() < dealerHand.points()) {
@@ -231,15 +200,17 @@ function loss() {
 }
 
 function updateStats() {
-    $("#dealerhand .firstcard").attr("src", dealerHand.image(0));  // Shows the first dealer card
-    $("#dealerpoints").empty().append(dpStr);
-    played++;
-    $("#played").empty().append(played);
-    $("#won").empty().append(won + " <span class='percent'>(" + Math.round((won / played) * 100) + "%)</span>");
-    $("#draw").empty().append(draw + " <span class='percent'>(" + Math.round((draw / played) * 100) + "%)</span>");
-    $("#lost").empty().append(lost + " <span class='percent'>(" + Math.round((lost / played) * 100) + "%)</span>");
-    $("#money").empty().append(money);
-    $(".bet input:radio").prop("disabled", false);
+    setTimeout(function () {
+        $("#dealerhand .firstcard").attr("src", dealerHand.image(0));  // Shows the first dealer card
+        $("#dealerpoints").empty().append(dpStr);
+        played++;
+        $("#played").empty().append(played);
+        $("#won").empty().append(won + " <span class='percent'>(" + Math.round((won / played) * 100) + "%)</span>");
+        $("#draw").empty().append(draw + " <span class='percent'>(" + Math.round((draw / played) * 100) + "%)</span>");
+        $("#lost").empty().append(lost + " <span class='percent'>(" + Math.round((lost / played) * 100) + "%)</span>");
+        $("#money").empty().append(money);
+        $(".bet input:radio").prop("disabled", false);
+    }, slideCounter*500);
 }
 
 function showCard(card, points, who) {
@@ -345,15 +316,17 @@ function setLoader(value) {
 }
 
 function endGame(result) {
-    $("#start").prop({
-        "value" : "Restart",
-        "disabled" : true
-    });
-    $("#start").show();
-    $("#done").hide();
-    $("#deal").hide();
-    $("#results").append(result);
-    $("#start").prop("disabled", false);
+    setTimeout(function () {
+        $("#start").prop({
+            "value" : "Restart",
+            "disabled" : true
+        });
+        $("#start").show();
+        $("#done").hide();
+        $("#deal").hide();
+        $("#results").append(result);
+        $("#start").prop("disabled", false);
+    }, slideCounter*500);
 }
 
 function hit(deck) {
