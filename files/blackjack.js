@@ -32,6 +32,16 @@ function play() {
     $(".bet input").change(function() {
         betValue = parseInt($(".bet input:radio:checked").val());
     });
+    $("#toggler").click(function() {
+        if($("#instructions").is(":visible")) {
+            $("#instructions").slideUp("slow");
+            $("#toggler").empty().append("Show instructions");
+        } else {
+            $("#instructions").slideDown("slow");
+            $("#toggler").empty().append("Hide instructions");
+        }
+     
+    });
 }
 
 

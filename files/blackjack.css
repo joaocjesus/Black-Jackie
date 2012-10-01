@@ -1,4 +1,5 @@
 body {
+	font-family: Arial, Helvetica, sans-serif;
 	background-color: black;
 	color: white;
 }
@@ -15,17 +16,34 @@ h3 {
 	background-color: #080;	
 	border-radius: 15px;
 	border: 20px solid #631;
+	border-bottom: 0;
 	padding: 10px;
 }
 
 #instructions {
+	font-size: 14px;
 	width: 750px;
 	margin: auto;
 	padding: 10px;
+	display: none;
+}
+
+#toggler {
+	width: 770px;
+	background-color: #631;
+	height: 20px;
+	margin: -25px auto 10px;
+	padding: 5px 0 0 0;
+	text-align: center;
+	font-size: 14px;
+}
+
+#toggler:hover {
+	background-color: black;
+	cursor: pointer;
 }
 
 .panel {
-	font-family: Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	height: 70px;
 	border-bottom: 1px solid #003300;
@@ -141,3 +159,13 @@ h3 {
 	bottom: 10px;
 }
 
+#header {
+	margin: auto;
+	text-align: center;
+}
+
+#footer {
+	float: right;
+	font-size: 10px;
+	margin: 40px 5px 5px;
+}

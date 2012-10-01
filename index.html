@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="files/blackjack.css" type="text/css">
 	</head>
 	<body>
+		<div id="header"><h1>Black Jackie</h1></div>
 		<div class="content">
 			<div class="panel">
 				<div class="status">
@@ -39,21 +40,49 @@
 					</div>
 				</div>
 				<div id="commands">
-					<input id="deal" type="button" value="Deal"/>
-					<input id="done" type="button" value="Stand"/>
-					<input id="start" type="button" value="Restart"/>
+					<input id="deal" type="button" value="Deal" title="Deal"/>
+					<input id="done" type="button" value="Stand" title="Stop here"/>
+					<input id="double" type="button" value="Double" title="Double Down"/>
+					<input id="start" type="button" value="Restart" title="Play again"/>
 				</div>
 				<div id="results"></div>
 				<div id="debug"></div>
 			</div>
 		</div>
+		<div id="toggler">Show instructions</div>
 		<div id="instructions">
 				<strong>Black Jackie</strong><br />
-				<p>This is a simple Black Jack game that I made to practise a bit Javascript and jQuery.<br />
-				You can get the source code from the Black Jackie github repo. <br />
-				If you see any errors, please let me know.<br /></p>
+				<p>
+					This is a simple Black Jack game that I made to practise a bit Javascript and jQuery.<br />
+					If you wish you can get the source code from the <a href="https://github.com/WhiT3Kr0w/Black-Jackie" target="_blank">Black Jackie github repo</a>. <br />
+					If you see any errors or want to give some feedback or advice, please let me know.<br />
+					Feel free to use any bits of my code. Just give me a nudge so I can feel proud someone is using some of my code  ;)<br />
+				</p>
+				<strong>Instructions:</strong><br />
+				<p>
+					This is a simple Black Jack game, US style.<br />
+					The purpose of the game is to make bets and try to win some money each hand dealt.<br />
+					To win a hand you will need to get as close to 21 points as possible, without exceeding 21. If you get 22 or more you are busted and lose the hand.<br />
+					Aces can count as 1 or 11 points, Jacks, Queens and Kings count as 10 points and the remaining cards are counted as their numeric value.<br />
+				</p><p>
+					Initially the dealer will deal 2 cards for you and 2 for him. Only one of his cards will be visible.<br />
+					You will then choose to get more cards or Stand.<br />
+					The dealer will play his hand after you choose to Stand or if you bust.<br />
+					He will get more cards until he reaches at least 17 points or busts. If he gets 17 he will stop there.<br />
+					The one that has the closest to 21 points without exceeding will win the game.<br />
+				</p><p>
+					A blackjack or natural hand is when the first two cards total 21 points.<br />
+					You, or the dealer, will win automatically with a Blackjack, in case the other one doesn't get one as well.<br />
+					If you both have a Blackjack then it is a tie/draw, also know as a push.<br />
+					21 points done in the third or later card does not count as a Blackjack.<br />					
+				</p><p>
+					If both of you bust you will lose your bet. The 'house' has advantage.
+					If you win you will get the same amount as your bet.
+					If you lose, you will get the sum of your bet taken from your money stack.
+					If you get a Blackjack you will be paid a 3/2 rate. Which means you will get 150% of your bet. If you bet 5, you will win 7.5.
+				</p>
 			</div>
-			<div id="footer"></div>
+			<div id="footer">Developed by <a href="https://github.com/WhiT3Kr0w">WhiT3Kr0w</a></div>
 		<script src="files/jquery-1.8.2.min.js" type="text/javascript"></script>
 		<script src="files/blackjack.js" type="text/javascript"></script>
 		<noscript>
