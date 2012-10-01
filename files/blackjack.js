@@ -1,4 +1,4 @@
-var gameDeck, playerHand, dealerHand, bjDeck;
+var gameDeck, playerHand, dealerHand;
 var dealerlimit = 17;  // value at which the dealer will not deal again
 var imagesPath = 'images/';
 var hole = 'images/b.gif';
@@ -312,7 +312,10 @@ function imgLoad(image) {
     setLoader(imagesLoaded / gameDeck.length);
     if (imagesLoaded == gameDeck.length) {
         $("#deal").prop('disabled', false);
-        $('#loader').empty().append("Deck loaded!!").fadeOut("slow").remove();
+        $("#loader").empty().append("Deck loaded!!");
+        setTimeout(function() {
+            $("#loader").fadeOut("slow");
+        }, 2000);
     }
 }
 
