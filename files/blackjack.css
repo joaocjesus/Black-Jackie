@@ -94,24 +94,27 @@ h3 {
 }
 
 #commands {
-	margin: 20px auto;
+	margin: 15px auto;
 	padding: 0 10px;
 }
 
 #debug {
 	padding-left: 10px;
-	margin-top: 15px;
+	margin-top: 14px;
+	font-size: 12px;
 }
 
 #results {
 	margin: 20px 10px 0 10px;
-	height: 60px;
-	padding: 10px;
+	height: 35px;
+	padding: 20px 10px 10px;
 	border-radius: 15px;
 	border-left: 1px solid #030;
 	border-top: 1px solid #030;
 	border-right: 1px solid #0a0;
-	border-bottom: 1px solid #0a0;	
+	border-bottom: 1px solid #0a0;
+	text-align: center;
+	font-weight: bolder;
 }
 
 #commands input {
