@@ -1,12 +1,10 @@
-var gameDeck, playerHand, dealerHand;
-//var dealerlimit = 16;   // value at which the dealer will not deal again
-var playerpoints, dealerpoints;
+var gameDeck, playerHand, dealerHand, bjDeck;
+var dealerlimit = 17;  // value at which the dealer will not deal again
 var imagesPath = 'images/';
 var hole = 'images/b.gif';
 var imagesLoaded = 0;
-var isNewCard, playercardmargin, dealercardmargin, playeraces, dealeraces, slideCounter;
+var playercardmargin, dealercardmargin, slideCounter;
 var ppStr, dpStr;
-// variables to store the string to use to show the player and dealer points.
 var money = 100;
 var played = 0;
 var won = 0;
@@ -20,33 +18,35 @@ $(document).ready(function() {
 
 function play() {
     initialize();
-    $("#deal").click(function() {// button Deal/Hit pressed
+    $("#deal").click(function() {  // button Deal/Hit pressed
         betValue = parseInt($(".bet input:radio:checked").val());
         $(".bet input:radio").prop("disabled", true);
         deal();
     });
-    $("#done").click(function() {// button Done pressed
+    $("#done").click(function() {  // button Done pressed
         done();
     });
-    $("#start").click(function() {// button Start pressed, reloads page/application
-        //location.reload();
+    $("#start").click(function() {  // button Start pressed, reloads page/application
         restart();
     });
     $(".bet input").change(function() {
         betValue = parseInt($(".bet input:radio:checked").val());
-        //if (imagesCached)
-        //    $("#deal").prop('disabled', false);
-        //$("#debug .red").remove();
     });
 }
+
 
 // Initialize values to restart the game without the need to reload the page
 function initialize() {
     gameDeck = new cardDeck(1);
-    playerHand = new Array();
-    dealerHand = new Array();
-    playerpoints = 0;
-    dealerpoints = 0;
+    
+    bjDeck = new Array();
+    bjDeck.push(gameDeck[0]);
+    bjDeck.push(gameDeck[9]);
+    bjDeck.push(gameDeck[0]);
+    bjDeck.push(gameDeck[9]);
+    
+    playerHand = new Hand();
+    dealerHand = new Hand();
     playercardmargin = 0;
     dealercardmargin = 0;
     playeraces = 0;
@@ -54,21 +54,16 @@ function initialize() {
     ppStr = '';
     dpStr = '';
     slideCounter = 0;
-    isNewCard = true;
     $("#done").hide();
     $("#start").hide();
     if (imagesLoaded == 0) {
         $("#deal").prop('disabled', true);
         preloadImages(gameDeck);
     }
-    /*if (betValue == 0) {
-        $("#deal").prop('disabled', true);
-        $("#debug").empty().append("<span class='red'>Please select your bet.</span>");
-    }*/
     $("#money").empty().append(money);
 }
 
-function getPoints(hand, who) {
+/*function getPoints(hand, who) {
     var points = 0;
     var ace = 0;
     if (who == "player")
@@ -92,158 +87,184 @@ function getPoints(hand, who) {
             return points;
         }
     return points;
+}*/
+
+function Hand() {
+    var cards = new Array();
+    this.blackjack = false;
+    this.aces = 0;
+    this.value = function(x) {
+        return cards[x].value;
+    };
+    this.suit = function(x) {
+        return cards[x].suit;
+    };
+    this.name = function(x) {
+        return cards[x].name;
+    };
+    this.image = function(x) {
+        return cards[x].image;
+    };
+    this.points = function() {
+        var p = 0;
+        for (i = 0; i < this.size(); i++) {
+            p+=this.value(i);
+         }
+        return p;
+    };
+    this.size = function() {
+        return cards.length;
+    };
+    this.add = function(card) {
+        cards.push(card);
+        if(this.size() == 2)
+            if ((this.value(0) + this.value(1)) == 21)
+                this.blackjack = true;
+        if (this.points() > 21) 
+            for (i=0; i<this.size(); i++)
+                if (this.name(i) == "Ace" && this.value(i) == 11) {
+                    cards[i].value = 1;
+                    this.aces++;
+                    break;
+                }
+    };
 }
 
 // ---------------------------------------------------------------------------   DEAL cards ----------------------------------------------------------------
 function deal() {
     var newcard = hit(gameDeck);
-    playerHand.push(newcard);
-    playerpoints = getPoints(playerHand, "player");
-    showCard(newcard, playerpoints, "player");
-    if ((dealerpoints < playerpoints && playerpoints <= 21) || dealerHand.length < 2) {
-        newcard = hit(gameDeck);
-        dealerHand.push(newcard);
-        dealerpoints = getPoints(dealerHand, "dealer");
-        showCard(newcard, dealerpoints, "dealer");
+    playerHand.add(newcard);
+    showCard(newcard, playerHand.points(), "player");
+    if (dealerHand.size() < 2) {
+        newcard = hit(gameDeck);        
+        dealerHand.add(newcard);
+        showCard(newcard, dealerHand.points(), "dealer");
     }
     $("#deal").prop('value', 'Hit!');
     $("#done").show();
-    if (playerpoints == 21) {
-        if (dealerpoints < 21) {
-            do {
-                newcard = hit(gameDeck);
-                dealerHand.push(newcard);
-                dealerpoints = getPoints(dealerHand, "dealer");
-                showCard(newcard, dealerpoints, "dealer");
-            } while(dealerpoints<21);
-        }
-        if (dealerpoints > 21) {
-            endGame("You WON with a BLACKJACK (" + playerpoints + " points). Dealer BUSTED with " + dealerpoints + " points.");
-            win();
-        } else if (dealerpoints == 21) {
-            endGame("DRAW!! You got " + playerpoints + " points. Dealer got " + dealerpoints + " points.");
-            draw();
-        }
-    } else if (playerpoints > 21) {
-        if (dealerpoints == 21) {
-            endGame("Dealer WON with a BLACKJACK (" + dealerpoints + " points). You BUSTED with " + playerpoints + " points.");
-            loss();
-        } else if (dealerpoints > 21) {
-            endGame("DRAW!! Both you and the dealer BUSTED!! You got " + playerpoints + " points. Dealer got " + dealerpoints + " points.");
-            draw();
-        } else if (dealerpoints < 21) {
-            endGame("You BUSTED with " + playerpoints + " points. Dealer WON with " + dealerpoints + " points.");
-            loss();
-        }
-    } else if (playerpoints < 21) {
-        if (dealerpoints > 21) {
-            endGame("Dealer BUSTED with " + dealerpoints + " points. You WON with " + playerpoints + " points.");
-            win();
-        }
-    }
-    // Makes sure it deals two cards to start the game
-    if (isNewCard) {
-        isNewCard = false;
-        deal();
-    }
+    if (playerHand.size()>=2) {
+        if (playerHand.blackjack)
+            if(!dealerHand.blackjack) {
+                endGame("You WON with a BLACKJACK!!");
+                win();
+                return true;
+            }
+            else {
+                endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
+                tie();
+                return true;
+            }
+        if (dealerHand.blackjack)
+             if(!playerHand.blackjack) {
+                endGame("You LOST!! Dealer wins with a BLACKJACK!!");
+                win();
+                return true;
+            }
+            else {
+                endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
+                tie();
+                return true;  
+            }
+        if (playerHand.points() > 21)
+            done();
+    } else
+        deal();  // deals a second card each if there is only one at each hand
 }
 
 function done() {
     $("#done").hide();
-    if (dealerpoints < playerpoints) {
-        do {
-            var newcard = hit(gameDeck);
-            dealerHand.push(newcard);
-            dealerpoints = getPoints(dealerHand, "dealer");
-            showCard(newcard, dealerpoints, "dealer");
-        } while (dealerpoints<playerpoints && dealerpoints < 21);
+    var newcard;
+    while (dealerHand.points() < dealerlimit) {
+        newcard = hit(gameDeck);
+        dealerHand.add(newcard);
+        showCard(newcard, dealerHand.points(), "dealer");
     }
-    if (playerpoints == dealerpoints) {
-        if (dealerpoints > 10) {
-            endGame("DRAW!! You got " + playerpoints + " points. Dealer got " + dealerpoints + " points.");
-            drawGame();
-        } else {
-            var newcard = hit(gameDeck);
-            dealerHand.push(newcard);
-            dealerpoints = getPoints(dealerHand, "dealer");
-            showCard(newcard, dealerpoints, "dealer");
-            done();
-            return false;
-        }
-    }
-    if (playerpoints < dealerpoints) {
-        if (dealerpoints < 21) {
-            endGame("You LOST!! You got " + playerpoints + " points. Dealer WON with " + dealerpoints + " points.");
+    if (playerHand.points() > 21)
+        if (dealerHand.points() <= 21) {
+            endGame("You BUSTED!! Dealer WINS!!");
             loss();
         }
-        else if (dealerpoints == 21) {
-            endGame("Dealer WON with a BLACKJACK (" + dealerpoints + " points). You LOST with " + playerpoints + " points.");
+        else {
+            endGame("Both you and the dealer BUSTED!! You lost. (house advantage)");
             loss();
         }
-        else if (dealerpoints > 21) {
-            endGame("You WON!! You got " + playerpoints + " points. Dealer BUSTED with " + dealerpoints + " points.");
+    if (playerHand.points() == dealerHand.points()) {
+        endGame("DRAW!! You and the dealer got the same points.");
+        tie();
+    } else if (playerHand.points() < dealerHand.points()) {
+        if (dealerHand.points() <= 21) {
+            endGame("You LOST!! Dealer WON!!");
+            loss();
+        } else if (dealerHand.points() > 21) {
+            endGame("You WON!! Dealer BUSTED!!");
             win();
         }
-        return true;
+    } else if (playerHand.points() > dealerHand.points()) {
+        if (dealerHand.points() < 21) {
+            endGame("You WON!!");
+            win();
+        } else if (dealerHand.points() > 21) {
+            endGame("You WON!! Dealer BUSTED!!");
+            win();
+        }
     }
-    return false;
 }
 
 function win() {
     won++;
-    money+=betValue*2;
+    if (playerHand.blackjack) {
+        money += betValue * 1.5;
+    } else
+        money += betValue;
     updateStats();
 }
 
-function drawGame() {
+function tie() {
     draw++;
     updateStats();
 }
 
 function loss() {
     lost++;
-    money-=betValue;
+    money -= betValue;
     updateStats();
 }
 
 function updateStats() {
-    $("#dealerhand .firstcard").attr("src", dealerHand[0].image);
+    $("#dealerhand .firstcard").attr("src", dealerHand.image(0));  // Shows the first dealer card
     $("#dealerpoints").empty().append(dpStr);
     played++;
     $("#played").empty().append(played);
-    $("#won").empty().append(won + " <span class='percent'>(" + Math.round((won/played)*100) + "%)</span>");
-    $("#draw").empty().append(draw + " <span class='percent'>(" + Math.round((draw/played)*100) + "%)</span>");
-    $("#lost").empty().append(lost + " <span class='percent'>(" + Math.round((lost/played)*100) + "%)</span>");
+    $("#won").empty().append(won + " <span class='percent'>(" + Math.round((won / played) * 100) + "%)</span>");
+    $("#draw").empty().append(draw + " <span class='percent'>(" + Math.round((draw / played) * 100) + "%)</span>");
+    $("#lost").empty().append(lost + " <span class='percent'>(" + Math.round((lost / played) * 100) + "%)</span>");
     $("#money").empty().append(money);
     $(".bet input:radio").prop("disabled", false);
 }
 
 function showCard(card, points, who) {
     var placeID;
-    //var pointsID;
-    if (who == "player") {
+    if (who == "player")
         placeID = "#playerhand";
-        //pointsID = "#playerpoints";
-    } else if (who == "dealer") {
+    else if (who == "dealer")
         placeID = "#dealerhand";
-        //pointsID = "#dealerpoints";
-    }
     placeID += " .cards";
-    if (isNewCard) {
-        if(who == "player")
+    if(who == "player")
+        if(playerHand.size()==1)
             var newCard = $("<img class='firstcard' src='" + card.image + "' />").hide();
         else
+            var newCard = $("<img class='card' src='" + card.image + "' />").hide();
+    else
+        if(dealerHand.size()==1)
             var newCard = $("<img class='firstcard' src='" + hole + "' />").hide();
-    } else {
-        var newCard = $("<img class='card' src='" + card.image + "' />").hide();
-    }
+        else
+            var newCard = $("<img class='card' src='" + card.image + "' />").hide();
     $(placeID).append(newCard);
     $("#deal, #done").prop("disabled", true);
     if (who == "player")
         ppStr = points + " points";
     else
         dpStr = points + " points";
-    //$(pointsID).append(points + " points");
     if (who == "player") {
         slide(newCard, playercardmargin);
         playercardmargin += 30;
@@ -259,7 +280,6 @@ function showCard(card, points, who) {
         else if (dealeraces > 1)
             dpStr += " (" + dealeraces + " Aces counting 1 point each)";
     }
-
 }
 
 // Updates points and also enabled the buttons to continue playing
@@ -351,7 +371,7 @@ function cardDeck(num) {
     var suit = new Array('clubs', 'hearts', 'spades', 'diamonds');
     var suitLetter = new Array('c', 'h', 's', 'd');
     var deck = new Array();
-    for (i=0; i < num; i++) 
+    for ( i = 0; i < num; i++)
         for (i in suit) {
             deck.push(new card(suit[i], 'Ace', 11, imagesPath + suitLetter[i] + '1.gif'));
             deck.push(new card(suit[i], 'Two', 2, imagesPath + suitLetter[i] + '2.gif'));
@@ -376,4 +396,5 @@ function card(suit, name, value, image) {
     this.value = value;
     this.image = image;
 }
+
 
