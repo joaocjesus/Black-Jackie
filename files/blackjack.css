@@ -97,12 +97,12 @@ h3 {
 }
 
 #commands input {
-	height: 50px;
-	width: 100px;
+	height: 60px;
+	width: 120px;
 	font-weight: bold;
 }
 
-#start, #done {
+#start, #done, #double {
 	display: none;
 }
 
