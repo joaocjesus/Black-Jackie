@@ -3,8 +3,8 @@ var playerHand, dealerHand;
 //var dealerlimit = 16;   // value at which the dealer will not deal again
 var playerpoints, dealerpoints;
 var imagesPath = 'images/';
+var hole = 'images/b.gif';
 var imagesLoaded = 0;
-var imagesCached = false;
 var isNewCard, playercardmargin, dealercardmargin, playeraces, dealeraces, slideCounter;
 var ppStr, dpStr;
 // variables to store the string to use to show the player and dealer points.
@@ -23,6 +23,7 @@ $(document).ready(function() {
 function play() {
     initialize();
     $("#deal").click(function() {// button Deal/Hit pressed
+        betValue = parseInt($(".bet input:radio:checked").val());
         $(".bet input:radio").prop("disabled", true);
         deal();
     });
@@ -35,9 +36,9 @@ function play() {
     });
     $(".bet input").change(function() {
         betValue = parseInt($(".bet input:radio:checked").val());
-        if (imagesCached)
-            $("#deal").prop('disabled', false);
-        $("#debug .red").remove();
+        //if (imagesCached)
+        //    $("#deal").prop('disabled', false);
+        //$("#debug .red").remove();
     });
 }
 
@@ -63,10 +64,10 @@ function initialize() {
         $("#deal").prop('disabled', true);
         preloadImages(playerDeck);
     }
-    if (betValue == 0) {
+    /*if (betValue == 0) {
         $("#deal").prop('disabled', true);
         $("#debug").empty().append("<span class='red'>Please select your bet.</span>");
-    }
+    }*/
     $("#money").empty().append(money);
 }
 
@@ -209,6 +210,8 @@ function loss() {
 }
 
 function updateStats() {
+    $("#dealerhand .firstcard").attr("src", dealerHand[0].image);
+    $("#dealerpoints").empty().append(dpStr);
     played++;
     $("#played").empty().append(played);
     $("#won").empty().append(won + " <span class='percent'>(" + Math.round((won/played)*100) + "%)</span>");
@@ -230,8 +233,11 @@ function showCard(card, points, who) {
     }
     placeID += " .cards";
     if (isNewCard) {
-        var newCard = $("<img class='firstcard' src='" + card.image + "' />").hide();
-    } else if (!isNewCard) {
+        if(who == "player")
+            var newCard = $("<img class='firstcard' src='" + card.image + "' />").hide();
+        else
+            var newCard = $("<img class='firstcard' src='" + hole + "' />").hide();
+    } else {
         var newCard = $("<img class='card' src='" + card.image + "' />").hide();
     }
     $(placeID).append(newCard);
@@ -245,19 +251,15 @@ function showCard(card, points, who) {
         slide(newCard, playercardmargin);
         playercardmargin += 30;
         if (playeraces == 1)
-            //$(pointsID).append(" (" + playeraces + " Ace counting 1 point)");
             ppStr += " (" + playeraces + " Ace counting 1 point)";
         else if (playeraces > 1)
-            //$(pointsID).append(" (" + playeraces + " Aces counting 1 point each)");
             ppStr += " (" + playeraces + " Aces counting 1 point each)";
-    } else if (who == "dealer") {
+    } else {
         slide(newCard, dealercardmargin);
         dealercardmargin += 30;
         if (dealeraces == 1)
-            //$(pointsID).append(" (" + dealeraces + " Ace counting 1 point)");
             dpStr += " (" + dealeraces + " Ace counting 1 point)";
         else if (dealeraces > 1)
-            //$(pointsID).append(" (" + dealeraces + " Aces counting 1 point each)");
             dpStr += " (" + dealeraces + " Aces counting 1 point each)";
     }
 
@@ -266,7 +268,6 @@ function showCard(card, points, who) {
 // Updates points and also enabled the buttons to continue playing
 function updatePoints() {
     $("#playerpoints").empty().append(ppStr);
-    $("#dealerpoints").empty().append(dpStr);
     $("#deal, #done").prop("disabled", false);
 }
 
@@ -312,10 +313,8 @@ function imgLoad(image) {
     imagesLoaded++;
     setLoader(imagesLoaded / playerDeck.length);
     if (imagesLoaded == playerDeck.length) {
-        if (betValue > 0)
-            $("#deal").prop('disabled', false);
+        $("#deal").prop('disabled', false);
         $('#loader').empty().append("Deck loaded!!").fadeOut("slow").remove();
-        imagesCached = true;
     }
 }
 
