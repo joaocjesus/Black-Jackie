@@ -5,7 +5,7 @@ var hole = 'images/b.gif';
 var imagesLoaded = 0;
 var playercardmargin, dealercardmargin, slideCounter;
 var ppStr, dpStr;
-var money = 100;
+var money = 10;
 var played = 0;
 var won = 0;
 var draw = 0;
@@ -26,7 +26,10 @@ function play() {
     $("#done").click(function() {  // button Done pressed
         done();
     });
-    $("#start").click(function() {  // button Start pressed, reloads page/application
+    $("#double").click(function() {  // button Double pressed
+        doubledown();
+    });
+    $("#start").click(function() {  // button Start pressed, reloads application
         restart();
     });
     $(".bet input").change(function() {
@@ -111,50 +114,67 @@ function Hand() {
 
 // ---------------------------------------------------------------------------   DEAL cards ----------------------------------------------------------------
 function deal() {
+    if (money>=betValue) {
+        dealcards();
+    } else
+        noMoney();
+}
+
+function noMoney() {
+    if(money==0)
+        $("#results").empty().append("You don't have enough money to play.<br /> You lost all your money.");
+    else {
+        $("#results").empty().append("You don't have enough money to place that bet.<br /> Please place a lower bet.");
+        $(".bet input:radio").prop("disabled", false);
+    }
+}
+
+function dealcards() {
+    $("#results").empty();
     var newcard = hit(gameDeck);
-    playerHand.add(newcard);
-    showCard(newcard, playerHand.points(), "player");
-    if (dealerHand.size() < 2) {
-        newcard = hit(gameDeck);        
-        dealerHand.add(newcard);
-        showCard(newcard, dealerHand.points(), "dealer");
-    }
-    if (playerHand.size()==2) {
-        if (playerHand.blackjack)
-            if(!dealerHand.blackjack) {
-                endGame("You WON with a BLACKJACK!!");
-                win();
-                return true;
-            }
-            else {
-                endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
-                tie();
-                return true;
-            }
-        if (dealerHand.blackjack)
-             if(!playerHand.blackjack) {
-                endGame("You LOST!! Dealer wins with a BLACKJACK!!");
-                loss();
-                return true;
-            }
-            else {
-                endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
-                tie();
-                return true;  
-            }
-        $("#double").show();
-    } else if (playerHand.size()==1)
-            deal();  // deals a second card each if there is only one at each hand
-    else 
-        if (playerHand.points() > 21)
-            done();
-    // only shows the following buttons if there are at least 2 cards on each hand.
-    if (playerHand.size()>1) {
-        if (playerHand.size()>2)
-            $("#double").hide();
-        $("#deal").prop('value', 'Hit!');
-        $("#done").show();
-    }
+        playerHand.add(newcard);
+        showCard(newcard, playerHand.points(), "player");
+        if (dealerHand.size() < 2) {
+            newcard = hit(gameDeck);        
+            dealerHand.add(newcard);
+            showCard(newcard, dealerHand.points(), "dealer");
+        }
+        if (playerHand.size()==2) {
+            if (playerHand.blackjack)
+                if(!dealerHand.blackjack) {
+                    endGame("You WON with a BLACKJACK!!");
+                    win();
+                    return true;
+                }
+                else {
+                    endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
+                    tie();
+                    return true;
+                }
+            if (dealerHand.blackjack)
+                 if(!playerHand.blackjack) {
+                    endGame("You LOST!! Dealer wins with a BLACKJACK!!");
+                    loss();
+                    return true;
+                }
+                else {
+                    endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
+                    tie();
+                    return true;  
+                }
+            $("#double").show();
+        } else if (playerHand.size()==1)
+                deal();  // deals a second card each if there is only one at each hand
+        else 
+            if (playerHand.points() > 21)
+                done();
+        // only shows the following buttons if there are at least 2 cards on each hand.
+        if (playerHand.size()>1) {
+            if (playerHand.size()>2)
+                $("#double").hide();
+            $("#deal").prop('value', 'Hit!');
+            $("#done").show();
+        }
 }
 
 function done() {
@@ -197,6 +217,12 @@ function done() {
             win();
         }
     }
+}
+
+function doubledown() {
+     betValue*=2;
+     deal();
+     done();
 }
 
 function win() {
@@ -348,7 +374,7 @@ function endGame(result) {
         $("#done").hide();
         $("#deal").hide();
         $("#double").hide();
-        $("#results").append(result);
+        $("#results").empty().append(result);
         $("#start").prop("disabled", false);
     }, slideCounter*500);
 }
