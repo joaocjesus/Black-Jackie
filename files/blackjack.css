@@ -1,6 +1,6 @@
 body {
 	font-family: Arial, Helvetica, sans-serif;
-	background-color: black;
+	background-color: #020;
 	color: white;
 }
 
@@ -14,10 +14,16 @@ a:hover {
 	color: #006600;
 }
 
-h3 {
+h4 {
 	font-weight: bold;
-	text-decoration: underline;
 	margin-top: 0;
+}
+
+#page {
+	width: 810px;
+	margin: 0 auto;
+	background: black;
+	border-radius: 15px;
 }
 
 .content {
@@ -32,9 +38,7 @@ h3 {
 
 #instructions {
 	font-size: 14px;
-	width: 750px;
-	margin: auto;
-	padding: 10px;
+	padding: 20px;
 	display: none;
 }
 
@@ -119,8 +123,8 @@ h3 {
 	height: 35px;
 	padding: 20px 10px 10px;
 	border-radius: 15px;
-	border-left: 1px solid #030;
-	border-top: 1px solid #030;
+	border-left: 1px solid #050;
+	border-top: 1px solid #050;
 	border-right: 1px solid #0a0;
 	border-bottom: 1px solid #0a0;
 	text-align: center;
@@ -140,15 +144,15 @@ h3 {
 .hand {
 	position: relative;
 	display: block;
-	width: 310px;
+	width: 300px;
 	height: 200px;
 	background-color: #060;
-	padding: 10px;
+	padding: 10px 20px;
 	border-radius: 15px;
-	border-left: 1px solid #030;
-	border-top: 1px solid #030;
-	border-right: 1px solid #0a0;
-	border-bottom: 1px solid #0a0;
+	border-left: 2px solid #050;
+	border-top: 2px solid #050;
+	border-right: 2px solid #0a0;
+	border-bottom: 2px solid #0a0;
 }
 
 #playerhand {
@@ -173,13 +177,13 @@ h3 {
 }
 
 #header {
-	margin: auto;
+	padding: 5px 0;
 	text-align: center;
 }
 
 #footer {
-	float: right;
+	height: 35px;
 	font-size: 10px;
-	margin: 40px 5px 5px;
+	padding: 0 20px;
 	text-align: right;
 }
