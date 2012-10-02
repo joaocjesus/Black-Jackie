@@ -5,7 +5,7 @@ var hole = 'images/b.gif';
 var imagesLoaded = 0;
 var playercardmargin, dealercardmargin, slideCounter;
 var ppStr, dpStr;
-var money = 10;
+var money = 100;
 var played = 0;
 var won = 0;
 var draw = 0;
