@@ -59,7 +59,7 @@ function initialize() {
     slideCounter = 0;
     $("#done").hide();
     $("#start").hide();
-    $("#double").hide();
+    $("#double").prop('disabled', true);
     if (imagesLoaded == 0) {
         $("#deal").prop('disabled', true);
         preloadImages(gameDeck);
@@ -119,8 +119,6 @@ function deal() {
         dealerHand.add(newcard);
         showCard(newcard, dealerHand.points(), "dealer");
     }
-    $("#deal").prop('value', 'Hit!');
-    $("#done").show();
     if (playerHand.size()==2) {
         if (playerHand.blackjack)
             if(!dealerHand.blackjack) {
@@ -144,14 +142,26 @@ function deal() {
                 tie();
                 return true;  
             }
+        $("#double").show();
     } else if (playerHand.size()==1)
             deal();  // deals a second card each if there is only one at each hand
-    else if (playerHand.points() > 21)
-        done();
+    else 
+        if (playerHand.points() > 21)
+            done();
+    // only shows the following buttons if there are at least 2 cards on each hand.
+    if (playerHand.size()>1) {
+        if (playerHand.size()>2)
+            $("#double").hide();
+        $("#deal").prop('value', 'Hit!');
+        $("#done").show();
+    }
 }
 
 function done() {
+    $("#start").prop("disabled", true).show();
     $("#done").hide();
+    $("#double").hide();
+    $("#deal").hide();
     var newcard;
     while (dealerHand.points() < dealerlimit) {
         newcard = hit(gameDeck);
@@ -266,7 +276,7 @@ function showCard(card, points, who) {
 // Updates points and also enabled the buttons to continue playing
 function updatePoints() {
     $("#playerpoints").empty().append(ppStr);
-    $("#deal, #done").prop("disabled", false);
+    $("#deal, #done, #double").prop("disabled", false);
 }
 
 function slide(card, cardmargin) {
@@ -337,6 +347,7 @@ function endGame(result) {
         $("#start").show();
         $("#done").hide();
         $("#deal").hide();
+        $("#double").hide();
         $("#results").append(result);
         $("#start").prop("disabled", false);
     }, slideCounter*500);
