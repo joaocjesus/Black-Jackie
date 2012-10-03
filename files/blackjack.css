@@ -10,8 +10,11 @@ a {
 }
 
 a:hover {
-	text-decoration: underline;
 	color: #006600;
+}
+
+h1 {
+	margin-bottom: 0;
 }
 
 h4 {
@@ -19,11 +22,17 @@ h4 {
 	margin-top: 0;
 }
 
+h6 {
+	margin: 15px;
+}
+
 #page {
 	width: 810px;
 	margin: 0 auto;
-	background: black;
+	background-color: black;
 	border-radius: 15px;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
 }
 
 .content {
@@ -31,6 +40,8 @@ h4 {
 	margin: auto;
 	background-color: #080;	
 	border-radius: 15px;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
 	border: 20px solid #631;
 	border-bottom: 0;
 	padding: 10px;
@@ -53,7 +64,7 @@ h4 {
 }
 
 #toggler:hover {
-	background-color: black;
+	background-color: #420;
 	cursor: pointer;
 }
 
@@ -64,14 +75,14 @@ h4 {
 	padding: 10px;
 }
 
-#money, #played, #won, #draw, #lost, #percentwon {
+#money, .played, .won, .draw, .lost, .blackjacks {
 	color: yellow;
 	font-weight: bold;
-	margin-right: 15px;
+	margin-right: 5px;
 }
 
 .bet {
-	width: 310px;
+	width: 200px;
 	float: right;
 	border: 1px dotted #030;
 	padding: 5px 15px;
@@ -86,15 +97,34 @@ h4 {
 	margin-right: 10px;
 }
 
-.status {
-	width: 300px;
+#session {
 	float: left;
-	padding: 5px;
+	width: 300px;
+	padding-left: 5px;
 	line-height: 1.5;
+}
+
+#total {
+	float: left;
+	width: 160px;
+	padding-left: 5px;
+	line-height: 2;
+}
+
+#total a {
+	color: #AAFFAA;
+}
+
+#total a:hover {
+	color: #55AA55;
 }
 
 .main {
 	height: 460px;
+}
+
+#balance {
+	padding: 15px 0 5px 15px;
 }
 
 .percent {
@@ -124,6 +154,8 @@ h4 {
 	height: 35px;
 	padding: 15px;
 	border-radius: 15px;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
 	border-left: 1px solid #050;
 	border-top: 1px solid #050;
 	border-right: 1px solid #0a0;
@@ -150,6 +182,8 @@ h4 {
 	background-color: #060;
 	padding: 10px 20px;
 	border-radius: 15px;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
 	border-left: 2px solid #050;
 	border-top: 2px solid #050;
 	border-right: 2px solid #0a0;
@@ -180,6 +214,7 @@ h4 {
 #header {
 	padding: 5px 0;
 	text-align: center;
+	display: none;
 }
 
 #footer {
@@ -187,4 +222,86 @@ h4 {
 	font-size: 10px;
 	padding: 0 20px;
 	text-align: right;
+}
+
+#info {
+	float: left;
+	margin-top: 5px;
+	color: #777;
+}
+
+#stats {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 5px;
+	background-color: #631;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+	-moz-border-radius-bottomright:15px;
+	-moz-border-radius-bottomleft:15px;
+	-webkit-border-bottom-right-radius:15px;
+	-webkit-border-bottom-left-radius:15px;
+	padding: 0 10px 10px;
+	border-top: 0;
+	-moz-box-shadow:    2px 2px 10px 2px #000;
+	-webkit-box-shadow: 2px 2px 10px 2px #000;
+	box-shadow:         2px 2px 10px 2px #000;
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
+	font-size: 16px;
+}
+
+#innerstats {
+	height: 220px;
+	width: 240px;
+	background-color: #080;
+	padding: 20px;
+	-moz-border-radius-bottomright:7px;
+	-moz-border-radius-bottomleft:7px;
+	-webkit-border-bottom-right-radius:7px;
+	-webkit-border-bottom-left-radius:7px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+}
+
+#closestats, #clearstats {
+	position: absolute;
+	bottom: 25px;
+	height: 30px;
+	width: 90px;
+	border: 1px solid #030;
+	background-color: #080;
+	color: white;
+	cursor: pointer;
+}
+
+#closestats {
+	right: 25px;
+}
+
+#clearstats {
+	left: 25px;
+}
+
+#closestats:hover, #clearstats:hover {
+	background-color: #030;
+}
+
+#total #showstats {
+	color:#4D7;
+}
+
+#total #showstats:hover {
+	color: white;
+}
+
+.dialog {
+	text-align: center;
+}
+
+#stopdebug {
+	float: right;
 }
