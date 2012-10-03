@@ -112,7 +112,8 @@ h6 {
 }
 
 #total a {
-	color: #AAFFAA;
+	color: #55EE55;
+	font-size: 14px;
 }
 
 #total a:hover {
