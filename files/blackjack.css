@@ -233,7 +233,7 @@ h6 {
 #stats {
 	display: none;
 	position: absolute;
-	top: 0;
+	top: -300px;
 	left: 5px;
 	background-color: #631;
 	border-bottom-left-radius: 15px;
