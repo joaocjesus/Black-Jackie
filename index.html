@@ -9,13 +9,20 @@
 	</head>
 	<body>
 		<div id="page">
-			<div id="header"><h1>Black Jackie</h1></div>
+			<div id="header">
+				<h1>Black Jackie</h1>
+				<h6>A simple Blackjack game</h6>
+			</div>
 			<div class="content">
 				<div class="panel">
-					<div class="status">
-						Money: <span id="money">0</span> <br/>
-						Games played this session: <span id="played">0</span><br/>
-						Won: <span id="won">0</span> Draw: <span id="draw">0</span> Lost: <span id="lost">0</span><br/>
+					<div id="session">
+						<strong>This session</strong><br />
+						Games played: <span class="played">0</span><br/>
+						Won: <span class="won">0</span> Draw: <span class="draw">0</span> Lost: <span class="lost">0</span><br/>
+					</div>
+					<div id="total">
+						Total games played: <span class="played">0</span><br/>
+						<a id="showstats" href="#"><strong>Show more stats</strong></a><br />
 					</div>
 					<div class="bet">
 						Please select your bet:<br/>
@@ -28,7 +35,9 @@
 						<input type="radio" name="bet" value="10" id="bet_ten" />
 						<label for = "bet_ten">10</label>
 					</div>
+					
 				</div>
+				<div id="balance">Money: <span id="money">0</span></div>
 				<div class="main">
 					<div id="game">
 						<div class="hand" id="playerhand">
@@ -74,7 +83,7 @@
 						You will then choose to get more cards, Stand or Double your bet.<br />
 						If you double your bet you will get only one more card.<br />
 						The dealer will play his hand after you finish playing or you bust.<br />
-						He will get more cards until he reaches at least 17 points or busts. If he gets 17 he will stop there.<br />
+						He will get more cards until he reaches at least 17 points or busts.<br />
 						The one that has the closest to 21 points without exceeding will win the game.<br />
 					</p><p>
 						A blackjack or natural hand is when the first two cards total 21 points.<br />
@@ -88,10 +97,25 @@
 						If you get a Blackjack you will be paid a 3/2 rate. Which means you will get 150% of your bet. If you bet 5, you will win 7.5.<br />
 						If you double and win, you will get twice the amount you placed as a bet.<br />
 						If you double and lose, you will lose twice the amount you placed as a bet.<br />
+						The Double option will be disabled if you don't have enough money to double the bet.<br />
 						<p>Happy gaming!!</p>
 					</p>
 				</div>
-				<div id="footer">Developed by <a href="https://github.com/WhiT3Kr0w">WhiT3Kr0w</a><br /><a href="mailto:wk@geekie.net">wk@geekie.net</a></div>
+				<div id="footer">
+					<div id="info"></div>
+					Developed by <a href="https://github.com/WhiT3Kr0w">WhiT3Kr0w</a><br /><a href="mailto:wk@geekie.net">wk@geekie.net</a></div>
+			</div>
+			<div id="stats">
+				<div id="innerstats">
+					<h4>Statistics</h4>
+					Games played: <span class="played">0</span><br/>
+					Won: <span class="won">0</span><br/>
+					Draw: <span class="draw">0</span><br/>
+					Lost: <span class="lost">0</span><br/>
+					<br />
+					Blackjack hands: <span class="blackjacks">0</span>
+					<input id="clearstats" type="button" value="Clear stats" /><input id="closestats" type="button" value="Close" />
+				</div>
 			</div>
 		<script src="files/jquery-1.8.2.min.js" type="text/javascript"></script>
 		<script src="files/blackjack.js" type="text/javascript"></script>
