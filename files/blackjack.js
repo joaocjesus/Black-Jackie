@@ -83,9 +83,10 @@ function play() {
     });
     $("#showstats").click(function() {  //  Shows stats window
         window.scrollTo(0, 0);
-        $("#stats").slideDown();
+        $("#stats").show();
+        $("#stats").animate({"top": "0px"}, "slow");
         $("#closestats").click(function() {
-            $("#stats").slideUp(); 
+            $("#stats").animate({"top": "-300px"}, "slow").fadeOut();
         });
         
     });
@@ -541,4 +542,3 @@ function runcycle() {
          $("#stopdebug").remove();
     });
 }
-
