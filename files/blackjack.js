@@ -1,20 +1,66 @@
-var gameDeck, playerHand, dealerHand;
+var gameDeck, playerHand, dealerHand, playercardmargin, dealercardmargin, slideCounter, cycle;
 var dealerlimit = 17;  // value at which the dealer will not deal again
 var imagesPath = 'images/';
 var hole = 'images/b.gif';
 var imagesLoaded = 0;
-var playercardmargin, dealercardmargin, slideCounter;
 var ppStr, dpStr;
 var money = 100;
+var webMoney = false;
 var played = 0;
 var won = 0;
 var draw = 0;
 var lost = 0;
 var betValue = 0;
+var hasWebStorage = false;
+var doubled = false;
+var webcount = 0;
+var totalplayed = 0;
+var totalwon = 0;
+var totallost = 0;
+var totaldraw = 0;
+var blackjacks = 0;
 
 $(document).ready(function() {
+    $("#header").delay(500).slideDown(1000);
+    cycle = getParameterByName("cycle");
+    hasWebStorage = ('localStorage' in window) && window['localStorage'] !== null;
+    if (hasWebStorage) {
+        if (parseInt(localStorage.getItem("webcount")) > 0) {
+            money = parseInt(localStorage.getItem('money'));
+            totalplayed = parseInt(localStorage.getItem('played'));
+            totalwon = parseInt(localStorage.getItem('won'));
+            totallost = parseInt(localStorage.getItem('lost'));
+            totaldraw = parseInt(localStorage.getItem('draw'));
+            blackjacks = parseInt(localStorage.getItem('blackjacks'));
+            webcount = parseInt(localStorage.getItem('webcount'));
+            webcount++;
+            localStorage.setItem("webcount", webcount);
+            updateWebStats();
+        }
+        else {
+            localStorage.setItem("money", money);
+            localStorage.setItem("played", played);
+            localStorage.setItem("won", won);
+            localStorage.setItem("lost", lost);
+            localStorage.setItem("draw", draw);
+            localStorage.setItem("blackjacks", blackjacks);
+            localStorage.setItem("webcount", 1);
+        }        
+        $("#info").append("Using HTML5 Web Storage");
+    }
+    else {
+        $("#total").remove();
+    }
     play();
+    if(cycle=='true' || cycle==true)
+        runcycle();
 });
+
+function getParameterByName(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)')
+                    .exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
 
 function play() {
     initialize();
@@ -32,8 +78,22 @@ function play() {
     $("#start").click(function() {  // button Start pressed, reloads application
         restart();
     });
-    $(".bet input").change(function() {
+    $(".bet input").change(function() {  // gets the bet value when the user selects a new value
         betValue = parseInt($(".bet input:radio:checked").val());
+    });
+    $("#showstats").click(function() {  //  Shows stats window
+        window.scrollTo(0, 0);
+        $("#stats").slideDown();
+        $("#closestats").click(function() {
+            $("#stats").slideUp(); 
+        });
+        
+    });
+    $("#clearstats").click(function() {
+        if(confirm("Are you sure you want to delete all statistics?")) {
+            localStorage.clear();
+            location.reload();
+        }
     });
     $("#toggler").click(function() {
         if($("#instructions").is(":visible")) {
@@ -53,10 +113,9 @@ function initialize() {
     gameDeck = new cardDeck(1);
     playerHand = new Hand();
     dealerHand = new Hand();
+    doubled = false;
     playercardmargin = 0;
     dealercardmargin = 0;
-    playeraces = 0;
-    dealeraces = 0;
     ppStr = '';
     dpStr = '';
     slideCounter = 0;
@@ -68,7 +127,6 @@ function initialize() {
         preloadImages(gameDeck);
     }
     $("#money").empty().append(money);
-    //$("#double").attr("value","DoubleDown");
 }
 
 function Hand() {
@@ -132,49 +190,57 @@ function noMoney() {
 function dealcards() {
     $("#results").empty();
     var newcard = hit(gameDeck);
-        playerHand.add(newcard);
-        showCard(newcard, playerHand.points(), "player");
-        if (dealerHand.size() < 2) {
-            newcard = hit(gameDeck);        
-            dealerHand.add(newcard);
-            showCard(newcard, dealerHand.points(), "dealer");
+    playerHand.add(newcard);
+    showCard(newcard, playerHand.points(), "player");
+    if (dealerHand.size() < 2) {
+        newcard = hit(gameDeck);        
+        dealerHand.add(newcard);
+        showCard(newcard, dealerHand.points(), "dealer");
+    }
+    if (playerHand.size()==2) {
+        if (playerHand.blackjack) {
+            blackjacks++;  // adds to the player blackjacks count
+            if(!dealerHand.blackjack) {
+                endGame("You WON with a BLACKJACK!!");
+                win();
+                return;
+            }
+            else {
+                endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
+                tie();
+                return;
+            }
+        if (dealerHand.blackjack)
+             if(!playerHand.blackjack) {
+                endGame("You LOST!! Dealer wins with a BLACKJACK!!");
+                loss();
+                return;
+            }
+            else {
+                endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
+                tie();
+                return;  
+            }
         }
-        if (playerHand.size()==2) {
-            if (playerHand.blackjack)
-                if(!dealerHand.blackjack) {
-                    endGame("You WON with a BLACKJACK!!");
-                    win();
-                    return true;
-                }
-                else {
-                    endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
-                    tie();
-                    return true;
-                }
-            if (dealerHand.blackjack)
-                 if(!playerHand.blackjack) {
-                    endGame("You LOST!! Dealer wins with a BLACKJACK!!");
-                    loss();
-                    return true;
-                }
-                else {
-                    endGame("DRAW!! Both you and the dealer got a BLACKJACK!!");
-                    tie();
-                    return true;  
-                }
+        if (betValue*2 <= money)
             $("#double").show();
-        } else if (playerHand.size()==1)
-                deal();  // deals a second card each if there is only one at each hand
-        else 
-            if (playerHand.points() > 21)
+    } else if (playerHand.size()==1) {
+            deal();  // deals a second card each if there is only one at each hand
+            return;
+    }
+    else 
+        if (playerHand.points() > 21) {
+            if(!doubled)  // if the player doubled it will run the done() function later
                 done();
-        // only shows the following buttons if there are at least 2 cards on each hand.
-        if (playerHand.size()>1) {
-            if (playerHand.size()>2)
-                $("#double").hide();
-            $("#deal").prop('value', 'Hit!');
-            $("#done").show();
+            return;
         }
+    // only shows the following buttons if there are at least 2 cards on each hand.
+    if (playerHand.size()>1) {
+        if (playerHand.size()>2)
+            $("#double").hide();
+        $("#deal").prop('value', 'Hit!');
+        $("#done").show();
+    }
 }
 
 function done() {
@@ -192,10 +258,12 @@ function done() {
         if (dealerHand.points() <= 21) {
             endGame("You BUSTED!! Dealer WINS!!");
             loss();
+            return;
         }
         else {
             endGame("Both you and the dealer BUSTED!! You lost. (house advantage)");
             loss();
+            return;
         }
     else if (playerHand.points() == dealerHand.points()) {
         endGame("DRAW!! You and the dealer got the same points.");
@@ -204,33 +272,38 @@ function done() {
         if (dealerHand.points() <= 21) {
             endGame("You LOST!! Dealer WON!!");
             loss();
+            return;
         } else if (dealerHand.points() > 21) {
             endGame("You WON!! Dealer BUSTED!!");
             win();
+            return;
         }
     } else if (playerHand.points() > dealerHand.points()) {
         if (dealerHand.points() < 21) {
             endGame("You WON!!");
             win();
+            return;
         } else if (dealerHand.points() > 21) {
             endGame("You WON!! Dealer BUSTED!!");
             win();
+            return;
         }
     }
 }
 
 function doubledown() {
-     betValue*=2;
-     deal();
-     done();
+    doubled = true;
+    betValue*=2;
+    deal();
+    done();
 }
 
 function win() {
     won++;
     if (playerHand.blackjack) {
-        money += betValue * 1.5;
+        setBalance(betValue * 1.5);
     } else
-        money += betValue;
+        setBalance(betValue);
     updateStats();
 }
 
@@ -241,8 +314,14 @@ function tie() {
 
 function loss() {
     lost++;
-    money -= betValue;
+    setBalance(-betValue);
     updateStats();
+}
+
+function setBalance(cash) {
+    money+=cash;
+    if(hasWebStorage)
+        localStorage.setItem("money", money);
 }
 
 function updateStats() {
@@ -250,13 +329,41 @@ function updateStats() {
         $("#dealerhand .firstcard").attr("src", dealerHand.image(0));  // Shows the first dealer card
         $("#dealerpoints").empty().append(dpStr);
         played++;
-        $("#played").empty().append(played);
-        $("#won").empty().append(won + " <span class='percent'>(" + Math.round((won / played) * 100) + "%)</span>");
-        $("#draw").empty().append(draw + " <span class='percent'>(" + Math.round((draw / played) * 100) + "%)</span>");
-        $("#lost").empty().append(lost + " <span class='percent'>(" + Math.round((lost / played) * 100) + "%)</span>");
+        $("#session .played").empty().append(played);
+        $("#session .won").empty().append(won + " <span class='percent'>(" + Math.round((won / played) * 100) + "%)</span>");
+        $("#session .draw").empty().append(draw + " <span class='percent'>(" + Math.round((draw / played) * 100) + "%)</span>");
+        $("#session .lost").empty().append(lost + " <span class='percent'>(" + Math.round((lost / played) * 100) + "%)</span>");
         $("#money").empty().append(money);
         $(".bet input:radio").prop("disabled", false);
+        if (hasWebStorage)
+            updateWebStats();
     }, slideCounter*500);
+}
+
+function updateWebStats() {
+    var tplayed = totalplayed + played;
+    var twon = totalwon + won;
+    var tlost = totallost + lost;
+    var tdraw = totaldraw + draw;
+    localStorage.setItem("played", tplayed);
+    localStorage.setItem("won", twon);
+    localStorage.setItem("lost", tlost);
+    localStorage.setItem("draw", tdraw);
+    localStorage.setItem("blackjacks", blackjacks);
+    $("#total .played").empty().append(tplayed);
+    $("#stats .played").empty().append(tplayed);
+    if(tplayed > 0) {
+        $("#stats .won").empty().append(twon + " <span class='percent'>(" + Math.round((twon / tplayed) * 100) + "%)</span>");
+        $("#stats .draw").empty().append(tdraw + " <span class='percent'>(" + Math.round((tdraw / tplayed) * 100) + "%)</span>");
+        $("#stats .lost").empty().append(tlost + " <span class='percent'>(" + Math.round((tlost / tplayed) * 100) + "%)</span>");
+        $("#stats .blackjacks").empty().append(blackjacks + " <span class='percent'>(" + Math.round((blackjacks / tplayed) * 100) + "%)</span>");
+    }
+    else {
+        $("#stats .won").empty().append(twon);
+        $("#stats .draw").empty().append(tdraw);
+        $("#stats .lost").empty().append(tlost);
+        $("#stats .blackjacks").empty().append(blackjacks);
+     }    
 }
 
 function showCard(card, points, who) {
@@ -285,17 +392,9 @@ function showCard(card, points, who) {
     if (who == "player") {
         slide(newCard, playercardmargin);
         playercardmargin += 30;
-        if (playeraces == 1)
-            ppStr += " (" + playeraces + " Ace counting 1 point)";
-        else if (playeraces > 1)
-            ppStr += " (" + playeraces + " Aces counting 1 point each)";
     } else {
         slide(newCard, dealercardmargin);
         dealercardmargin += 30;
-        if (dealeraces == 1)
-            dpStr += " (" + dealeraces + " Ace counting 1 point)";
-        else if (dealeraces > 1)
-            dpStr += " (" + dealeraces + " Aces counting 1 point each)";
     }
 }
 
@@ -420,4 +519,26 @@ function card(suit, name, value, image) {
     this.image = image;
 }
 
+function runcycle() {
+    $("#debug").show();
+    $("#debug").empty().append("<input id='stopdebug' type='button' value='Stop Debug' />");
+    var rundebug = setInterval(function(){
+        if(slideCounter==0) {
+            if(($("#deal").is(':visible') && $("#deal").prop("disabled", false)) && !$("#done").is(':visible'))
+                $("#deal").click();
+            else
+                if($("#done").is(':visible') && $("#done").prop("disabled", false))
+                    $("#done").click();
+                else
+                    if($("#start").is(':visible') && $("#start").prop("disabled", false))
+                        $("#start").click();
+        }
+        if (money<1)
+            clearInterval(rundebug);
+    }, 1000);
+    $("#stopdebug").click(function() {
+         clearInterval(rundebug);
+         $("#stopdebug").remove();
+    });
+}
 
