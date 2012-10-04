@@ -81,6 +81,14 @@ h6 {
 	margin-right: 5px;
 }
 
+#pot {
+	color: yellow;
+	float: right;
+	margin-right: 10px;
+	cursor: pointer;
+	font-weight: normal;
+}
+
 .bet {
 	width: 200px;
 	float: right;

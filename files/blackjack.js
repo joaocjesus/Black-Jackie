@@ -120,6 +120,7 @@ function initialize() {
     ppStr = '';
     dpStr = '';
     slideCounter = 0;
+    $(".bet input:radio").prop("disabled", false);
     $("#done").hide();
     $("#start").hide();
     $("#double").prop('disabled', true);
@@ -173,10 +174,18 @@ function Hand() {
 
 // ---------------------------------------------------------------------------   DEAL cards ----------------------------------------------------------------
 function deal() {
-    if (money>=betValue) {
-        dealcards();
-    } else
-        noMoney();
+    if ($("#deal").prop("value") == "Deal" && $("#deal").is(":visible") &&  !$("#deal").is(":disabled")) {
+        if (money>=betValue) {
+            setBalance(-betValue);
+            $("#pot").hide();
+            $("#pot").empty().append(betValue);
+            $("#pot").fadeIn();
+        } 
+        else
+            noMoney();
+    }
+    $("#deal").prop("disabled", true);
+    dealcards();
 }
 
 function noMoney() {
@@ -223,7 +232,7 @@ function dealcards() {
                 return;  
             }
         }
-        if (betValue*2 <= money)
+        if (betValue <= money)
             $("#double").show();
     } else if (playerHand.size()==1) {
             deal();  // deals a second card each if there is only one at each hand
@@ -294,13 +303,21 @@ function done() {
 
 function doubledown() {
     doubled = true;
+    setBalance(-betValue);
     betValue*=2;
+    $("#pot").hide();
+    $("#pot").empty().append(betValue);
+    $("#pot").fadeIn();
     deal();
     done();
 }
 
 function win() {
     won++;
+    setBalance(betValue);
+    $("#pot").hide();
+    $("#pot").empty().append("(" + betValue + ")+" + betValue);
+    $("#pot").fadeIn();
     if (playerHand.blackjack) {
         setBalance(betValue * 1.5);
     } else
@@ -310,17 +327,24 @@ function win() {
 
 function tie() {
     draw++;
+    setBalance(betValue);
+    $("#pot").hide();
+    $("#pot").empty().append("(" + betValue + ")");
+    $("#pot").fadeIn();
     updateStats();
 }
 
 function loss() {
     lost++;
-    setBalance(-betValue);
+    $("#pot").hide();
+    $("#pot").empty().append("-(" + betValue + ")");
+    $("#pot").fadeIn();
     updateStats();
 }
 
 function setBalance(cash) {
     money+=cash;
+    $("#money").empty().append(money);
     if(hasWebStorage)
         localStorage.setItem("money", money);
 }
@@ -334,7 +358,6 @@ function updateStats() {
         $("#session .won").empty().append(won + " <span class='percent'>(" + Math.round((won / played) * 100) + "%)</span>");
         $("#session .draw").empty().append(draw + " <span class='percent'>(" + Math.round((draw / played) * 100) + "%)</span>");
         $("#session .lost").empty().append(lost + " <span class='percent'>(" + Math.round((lost / played) * 100) + "%)</span>");
-        $("#money").empty().append(money);
         $(".bet input:radio").prop("disabled", false);
         if (hasWebStorage)
             updateWebStats();
@@ -423,6 +446,7 @@ function slide(card, cardmargin) {
 }
 
 function restart() {
+    $("#pot").empty();
     $("#deal").prop("value", "Deal");
     $("#deal").prop("disabled", false);
     $("#deal").show();
