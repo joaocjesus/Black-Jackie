@@ -1,4 +1,4 @@
-var gameDeck, playerHand, dealerHand, playercardmargin, dealercardmargin, slideCounter, cycle;
+var gameDeck, playerHand, dealerHand, playercardmargin, dealercardmargin, slideCounter, cycle, money;
 var dealerlimit = 17;  // value at which the dealer will not deal again
 var imagesPath = 'images/';
 var hole = 'images/b.gif';
@@ -51,6 +51,7 @@ $(document).ready(function() {
     else {
         $("#total").remove();
     }
+    money = parseInt(getParameterByName("money"));
     play();
     if(cycle=='true' || cycle==true)
         runcycle();
@@ -181,18 +182,20 @@ function deal() {
             $("#pot").empty().append(betValue);
             $("#pot").fadeIn();
         } 
-        else
+        else {
             noMoney();
+            return;
+        }
     }
     $("#deal").prop("disabled", true);
     dealcards();
 }
 
 function noMoney() {
-    if(money==0)
-        $("#results").empty().append("You don't have enough money to play.<br /> You lost all your money.");
+    if(money<1)
+        $("#results").empty().append("You don't have enough money to play.<br />You can Clear stats to start over.");
     else {
-        $("#results").empty().append("You don't have enough money to place that bet.<br /> Please place a lower bet.");
+        $("#results").empty().append("You don't have enough money to place that bet.<br />Please place a lower bet.");
         $(".bet input:radio").prop("disabled", false);
     }
 }
