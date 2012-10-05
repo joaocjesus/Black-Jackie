@@ -549,7 +549,7 @@ function card(suit, name, value, image) {
 
 function runcycle() {
     $("#debug").show();
-    $("#debug").empty().append("<input id='stopdebug' type='button' value='Stop Debug' />");
+    $("#debug").empty().append("<input id='stopdebug' type='button' value='Stop Cycle' />");
     var rundebug = setInterval(function(){
         if(slideCounter==0) {
             if(($("#deal").is(':visible') && $("#deal").prop("disabled", false)) && !$("#done").is(':visible'))
