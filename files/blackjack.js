@@ -26,7 +26,7 @@ $(document).ready(function() {
     hasWebStorage = ('localStorage' in window) && window['localStorage'] !== null;
     if (hasWebStorage) {
         if (parseInt(localStorage.getItem("webcount")) > 0) {
-            money = parseInt(localStorage.getItem('money'));
+            money = parseFloat(localStorage.getItem('money')).toFixed(1);
             totalplayed = parseInt(localStorage.getItem('played'));
             totalwon = parseInt(localStorage.getItem('won'));
             totallost = parseInt(localStorage.getItem('lost'));
@@ -51,7 +51,11 @@ $(document).ready(function() {
     else {
         $("#total").remove();
     }
-    money = parseInt(getParameterByName("money"));
+    if(parseFloat(getParameterByName("money")).toFixed(1)>-1) {
+        money = parseFloat(getParameterByName("money")).toFixed(1);
+        if (money%1==0)
+            money = parseInt(money);
+    }
     play();
     if(cycle=='true' || cycle==true)
         runcycle();
