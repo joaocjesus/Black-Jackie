@@ -1,24 +1,28 @@
-let gameDeck, playerHand, dealerHand, playercardmargin, dealercardmargin, slideCounter, cycle, money;
+let gameDeck, playerHand;
+let dealerHand;
+let playercardmargin;
+let dealercardmargin;
+var slideCounter, cycle, money;
 const dealerlimit = 17;  // value at which the dealer will not deal again
 const imagesPath = 'images/';
 const hole = 'images/b.gif';
 let imagesLoaded = 0;
-let ppStr, dpStr;
-let money = 100;
-let webMoney = false;
-let played = 0;
-let won = 0;
-let draw = 0;
-let lost = 0;
-let betValue = 0;
-let hasWebStorage = false;
-let doubled = false;
-let webcount = 0;
-let totalplayed = 0;
-let totalwon = 0;
-let totallost = 0;
-let totaldraw = 0;
-let blackjacks = 0;
+var ppStr, dpStr;
+var money = 100;
+var webMoney = false;
+var played = 0;
+var won = 0;
+var draw = 0;
+var lost = 0;
+var betValue = 0;
+var hasWebStorage = false;
+var doubled = false;
+var webcount = 0;
+var totalplayed = 0;
+var totalwon = 0;
+var totallost = 0;
+var totaldraw = 0;
+var blackjacks = 0;
 
 $(document).ready(function() {
     $("#header").delay(500).slideDown(1000);
@@ -350,7 +354,7 @@ function loss() {
 }
 
 function setBalance(cash) {
-    money+=cash;
+    money = parseFloat(money) + cash;
     $("#money").empty().append(money);
     if(hasWebStorage)
         localStorage.setItem("money", money);

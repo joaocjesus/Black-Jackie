@@ -1,14 +1,20 @@
 const express = require('express');
-const app = express();
+const reload = require('reload');
+const http = require('http');
 
+const app = express();
 app.use(express.static('public'));
+
 app.get('/', function (req, res) {
    res.sendFile( __dirname + "/" + "index.html" );
 })
 
-const server = app.listen(3001, function () {
-   const host = server.address().address
-   const port = server.address().port
+app.set('port', process.env.PORT || 3001);
 
-   console.log("Example app listening at http://%s:%s", host, port)
-})
+const server = http.createServer(app)
+
+reload(server, app);
+
+server.listen(app.get('port'), function(){
+  console.log("Web server listening on port " + app.get('port'));
+});
