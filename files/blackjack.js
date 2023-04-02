@@ -46,7 +46,7 @@ $(document).ready(function() {
             localStorage.setItem("blackjacks", blackjacks);
             localStorage.setItem("webcount", 1);
         }        
-        $("#info").append("Using HTML5 Web Storage");
+        $("#info").append("© 2012 Joao Jesus");
     }
     else {
         $("#total").remove();
